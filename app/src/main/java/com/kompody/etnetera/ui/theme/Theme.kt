@@ -17,17 +17,21 @@ import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val LightThemeColors = lightColors(
-//    primary = Color(0xFFBA9E31),
-//    primaryVariant = Color(0x99FFFFFF),
-//    secondary = Color(0xFF000000),
+    primary = Purple500,
+    primaryVariant = Purple700,
+    onPrimary = Color.White,
+    secondary = Teal200,
+    secondaryVariant = Teal700,
+    onSecondary = Color.Black
 )
 
 private val DarkThemeColors = darkColors(
-//    primary = Color(0xFFBA9E31),
-//    primaryVariant = Color(0x99FFFFFF),
-//    secondary = Color(0xFFFFFFFF),
-//    background = Color(0xFF000000),
-//    onBackground = Color(0xFFD9D9D9)
+    primary = Purple200,
+    primaryVariant = Purple700,
+    onPrimary = Color.Black,
+    secondary = Teal200,
+    secondaryVariant = Teal200,
+    onSecondary = Color.Black
 )
 
 @Composable
@@ -37,8 +41,8 @@ fun MainTheme(
 ) {
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(
-        color = Color.Black,
-        darkIcons = !darkTheme
+        color = MaterialTheme.colors.primary,
+        darkIcons = darkTheme
     )
 
     MaterialTheme(

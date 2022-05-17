@@ -15,7 +15,7 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
 ) : ViewModel() {
     companion object {
-        private const val DELAY = 5000L
+        private const val DELAY = 500L
     }
 
     sealed class Command {

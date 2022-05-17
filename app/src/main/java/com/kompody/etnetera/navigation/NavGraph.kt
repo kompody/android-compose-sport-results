@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.kompody.etnetera.ui.listing.ListingScreen
 import com.kompody.etnetera.ui.splash.SplashScreen
 import kotlinx.coroutines.InternalCoroutinesApi
 
@@ -40,6 +41,7 @@ fun SetupNavGraph(
         modifier = modifier
     ) {
         addSplashFlow(navController)
+        addMainFlow()
     }
 }
 
@@ -74,5 +76,28 @@ fun NavGraphBuilder.addSplash(
                 }
             }
         )
+    }
+}
+
+@InternalCoroutinesApi
+@ExperimentalMaterialApi
+fun NavGraphBuilder.addMainFlow() {
+    navigation(
+        route = Screen.Main.route,
+        startDestination = LeafScreen.Listing.createRoute(Screen.Main)
+    ) {
+        addListing(Screen.Main)
+    }
+}
+
+@InternalCoroutinesApi
+@ExperimentalMaterialApi
+fun NavGraphBuilder.addListing(
+    root: Screen
+) {
+    composable(
+        route = LeafScreen.Listing.createRoute(root)
+    ) {
+        ListingScreen()
     }
 }

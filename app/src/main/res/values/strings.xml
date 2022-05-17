@@ -11,4 +11,20 @@
     <string name="select">Select</string>
     <string name="change">Change</string>
     <string name="remove">Remove</string>
+
+    <string name="error_title">Error</string>
+    <string name="error_load">Error loading content</string>
+
+    <string name="listing_title">Listing</string>
+    <string name="listing_filter_all">All</string>
+    <string name="listing_filter_only_remote">Only Remote</string>
+    <string name="listing_filter_only_locale">Only Locale</string>
+
+    <string name="listing_item_name">Name</string>
+    <string name="listing_item_place">Place</string>
+    <string name="listing_item_duration">Duration</string>
+    <string name="listing_item_remote_indicator">remote</string>
+    <string name="listing_item_locale_indicator">locale</string>
+    <string name="listing_loading_error">Error loading content\nplease refresh the page</string>
+    <string name="listing_items_empty">Empty content</string>
 </resources>

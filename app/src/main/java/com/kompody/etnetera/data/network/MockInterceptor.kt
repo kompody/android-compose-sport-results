@@ -1,6 +1,7 @@
 package com.kompody.etnetera.data.network
 
 import com.kompody.etnetera.BuildConfig
+import com.kompody.etnetera.data.network.mock.fetchSportListMock
 import com.kompody.etnetera.data.network.mock.getErrorMock
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -19,6 +20,14 @@ class MockInterceptor @Inject constructor(
             )
         }
 
+        chain.request().url.toUri().toString()
+
+        val uri = chain.request().url.pathSegments.joinToString("/")
+        val responseString = when {
+            uri.endsWith("list/results") -> fetchSportListMock
+            else -> ""
+        }
+
         val isErrorChance = Date().time.toInt() % 4 == 0 //25%
         if (isErrorChance) {
             val errorString = getErrorMock
@@ -34,11 +43,6 @@ class MockInterceptor @Inject constructor(
                 )
                 .addHeader("content-type", "application/json")
                 .build()
-        }
-
-        val uri = chain.request().url.toUri().toString()
-        val responseString = when {
-            else -> ""
         }
 
         return chain.proceed(chain.request())
