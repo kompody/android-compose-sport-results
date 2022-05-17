@@ -5,7 +5,10 @@ package com.kompody.etnetera.ui.listing
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -21,9 +24,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 
 @Composable
-fun ListingScreen(
-    flag: Boolean = true
-) {
+fun ListingScreen() {
     val viewModel: ListingViewModel = hiltViewModel()
 
     LaunchedEffect(true) {
@@ -36,9 +37,13 @@ fun ListingScreen(
         }
     }
 
-
     MainTheme {
         ListingScreen(
+            onRefresh = { viewModel.accept(ListingViewModel.Action.Refresh) },
+            onFilterAllClick = { viewModel.accept(ListingViewModel.Action.FilterAllClick) },
+            onFilterOnlyRemoteClick = { viewModel.accept(ListingViewModel.Action.FilterOnlyRemote) },
+            onFilterOnlyLocaleClick = { viewModel.accept(ListingViewModel.Action.FilterOnlyLocale) },
+            onAddClick = { viewModel.accept(ListingViewModel.Action.AddButtonClick) },
             viewModel = viewModel
         )
     }
@@ -46,15 +51,40 @@ fun ListingScreen(
 
 @Composable
 private fun ListingScreen(
-    viewModel: ListingViewModel,
+    onRefresh: () -> Unit = {},
+    onFilterAllClick: () -> Unit,
+    onFilterOnlyRemoteClick: () -> Unit,
+    onFilterOnlyLocaleClick: () -> Unit,
+    onAddClick: () -> Unit = {},
+    viewModel: ListingViewModel
 ) {
+    val scaffoldState: ScaffoldState = rememberScaffoldState()
+
+    val actionLabel = stringResource(id = R.string.refresh)
+    LaunchedEffect(scaffoldState.snackbarHostState) {
+        viewModel.errors.flow.collect { error ->
+            val result = scaffoldState.snackbarHostState.showSnackbar(
+                message = error.toString(),
+                actionLabel = actionLabel
+            )
+            when (result) {
+                SnackbarResult.Dismissed -> {
+                }
+                SnackbarResult.ActionPerformed -> {
+                    onRefresh.invoke()
+                }
+            }
+        }
+    }
+
     ListingContent(
         viewModel = viewModel,
-        onRefresh = { viewModel.accept(ListingViewModel.Action.Refresh) },
-        onFilterAllClick = { viewModel.accept(ListingViewModel.Action.FilterAllClick) },
-        onFilterOnlyRemoteClick = { viewModel.accept(ListingViewModel.Action.FilterOnlyRemote) },
-        onFilterOnlyLocaleClick = { viewModel.accept(ListingViewModel.Action.FilterOnlyLocale) },
-        onAddClick = { viewModel.accept(ListingViewModel.Action.AddButtonClick) }
+        onRefresh = onRefresh,
+        onFilterAllClick = onFilterAllClick,
+        onFilterOnlyRemoteClick = onFilterOnlyRemoteClick,
+        onFilterOnlyLocaleClick = onFilterOnlyLocaleClick,
+        onAddClick = onAddClick,
+        scaffoldState = scaffoldState
     )
 }
 
@@ -66,30 +96,8 @@ private fun ListingContent(
     onFilterOnlyRemoteClick: () -> Unit,
     onFilterOnlyLocaleClick: () -> Unit,
     onAddClick: () -> Unit = {},
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    scaffoldState: ScaffoldState,
 ) {
-    val (showSnackBar, setShowSnackBar) = remember {
-        mutableStateOf(false)
-    }
-    val error by viewModel.errors.flow.collectAsState(null)
-
-    if (showSnackBar) {
-        LaunchedEffect(scaffoldState.snackbarHostState) {
-            val result = scaffoldState.snackbarHostState.showSnackbar(
-                message = error.toString()
-            )
-            when (result) {
-                SnackbarResult.Dismissed -> {
-                    setShowSnackBar(false)
-                }
-                SnackbarResult.ActionPerformed -> {
-                    setShowSnackBar(false)
-                    // perform action here
-                }
-            }
-        }
-    }
-
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {

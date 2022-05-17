@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.kompody.etnetera.utils.ResourceDelegate
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,4 +24,8 @@ object AppModule {
         val name = context.packageName + "_prefs"
         return context.getSharedPreferences(name, Context.MODE_PRIVATE)
     }
+
+    @Provides
+    fun provideResourceDelegate(@ApplicationContext context: Context): ResourceDelegate =
+        ResourceDelegate(context)
 }

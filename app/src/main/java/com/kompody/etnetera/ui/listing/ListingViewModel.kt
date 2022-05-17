@@ -9,19 +9,19 @@ import com.kompody.etnetera.ui.base.menu.PopupMenuAdapterItem
 import com.kompody.etnetera.ui.base.stateOf
 import com.kompody.etnetera.ui.listing.model.ResultItem
 import com.kompody.etnetera.ui.listing.model.ResultItemFilter
+import com.kompody.etnetera.utils.ResourceDelegate
 import com.kompody.etnetera.utils.extensions.io
 import com.kompody.etnetera.utils.extensions.main
 import com.kompody.etnetera.utils.extensions.timer
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-@InternalCoroutinesApi
 @HiltViewModel
 class ListingViewModel @Inject constructor(
+    private val resourceDelegate: ResourceDelegate,
     private val fetchResultsUseCase: FetchResultsUseCase
 ) : BaseViewModel() {
 
@@ -125,7 +125,7 @@ class ListingViewModel @Inject constructor(
                 val items = io { fetchResultsUseCase.execute(selectedFilter.value) }
                 main { showRecords(items) }
             } catch (e: Exception) {
-                errors.execute(e)
+                errors.execute(resourceDelegate, e)
                 showError()
             }
         }

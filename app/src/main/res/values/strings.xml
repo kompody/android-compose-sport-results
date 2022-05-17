@@ -11,6 +11,7 @@
     <string name="select">Select</string>
     <string name="change">Change</string>
     <string name="remove">Remove</string>
+    <string name="refresh">Refresh</string>
 
     <string name="error_title">Error</string>
     <string name="error_load">Error loading content</string>
