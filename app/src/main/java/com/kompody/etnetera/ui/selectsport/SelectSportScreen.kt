@@ -35,7 +35,7 @@ fun SelectSportScreen(
     }
 
     MainTheme {
-        SelectSportScreen(
+        SelectSportContent(
             onRefresh = { viewModel.accept(SelectSportViewModel.Action.Refresh) },
             onSportItemClick = { viewModel.accept(SelectSportViewModel.Action.SelectSport(it)) },
             viewModel = viewModel
@@ -44,27 +44,11 @@ fun SelectSportScreen(
 }
 
 @Composable
-private fun SelectSportScreen(
-    onRefresh: () -> Unit = {},
-    onSportItemClick: (SportItem) -> Unit = {},
-    viewModel: SelectSportViewModel
-) {
-    val scaffoldState: ScaffoldState = rememberScaffoldState()
-
-    SelectSportContent(
-        onRefresh = onRefresh,
-        onSportItemClick = onSportItemClick,
-        viewModel = viewModel,
-        scaffoldState = scaffoldState
-    )
-}
-
-@Composable
 private fun SelectSportContent(
     onRefresh: () -> Unit = {},
     onSportItemClick: (SportItem) -> Unit = {},
     viewModel: SelectSportViewModel,
-    scaffoldState: ScaffoldState
+    scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
     Scaffold(
         scaffoldState = scaffoldState,

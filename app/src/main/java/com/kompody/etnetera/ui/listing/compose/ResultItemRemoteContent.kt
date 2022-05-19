@@ -7,9 +7,9 @@ import com.kompody.etnetera.ui.theme.ListingItemRemoteBackground
 import com.kompody.etnetera.ui.theme.ListingItemRemoteIndicatorTextColor
 
 @Composable
-fun ResultItemRemoteContent(item: ResultItem.RemoteResultItem) {
+fun ResultItemRemoteContent(item: ResultItem) {
     ResultItemBaseContent(
-        name = item.name,
+        sportName = item.sportName,
         place = item.place,
         duration = item.duration,
         date = item.date,

@@ -7,9 +7,9 @@ import com.kompody.etnetera.ui.theme.ListingItemLocaleBackground
 import com.kompody.etnetera.ui.theme.ListingItemLocaleIndicatorTextColor
 
 @Composable
-fun ResultItemLocaleContent(item: ResultItem.LocaleResultItem) {
+fun ResultItemLocaleContent(item: ResultItem) {
     ResultItemBaseContent(
-        name = item.name,
+        sportName = item.sportName,
         place = item.place,
         duration = item.duration,
         date = item.date,

@@ -16,17 +16,21 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
+    @Singleton
     @Provides
     fun provideResultApi(retrofit: Retrofit): ResultApi = retrofit.create()
 
+    @Singleton
     @Provides
     fun provideSportsListApi(retrofit: Retrofit): SportsListApi = retrofit.create()
 
+    @Singleton
     @Provides
     fun provideRetrofit(
         okHttpClient: OkHttpClient,
@@ -37,6 +41,7 @@ object NetworkModule {
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 
+    @Singleton
     @Provides
     fun provideOkHttpClient(
         headerInterceptor: HeaderInterceptor,

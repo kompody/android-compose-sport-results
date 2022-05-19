@@ -159,163 +159,183 @@ private fun AddResultContent(
         modifier = modifier
             .padding(top = 24.dp, bottom = 16.dp)
     ) {
-        item {
-            Column {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .clickable { onSelectSportClick() }
-                ) {
-                    OutlinedTextField(
-                        value = state.sportName,
-                        onValueChange = { },
-                        readOnly = true,
-                        enabled = state.isSportEmpty,
-                        colors = TextFieldDefaults.textFieldColors(
-                            disabledTextColor = LocalContentColor.current.copy(LocalContentAlpha.current),
-                            backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = 0f),
-                            disabledIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.UnfocusedIndicatorLineOpacity),
-                            disabledTrailingIconColor = MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.IconOpacity),
-                            disabledLabelColor = MaterialTheme.colors.onSurface.copy(ContentAlpha.medium),
-                            disabledPlaceholderColor = MaterialTheme.colors.onSurface.copy(
-                                ContentAlpha.medium
-                            )
-                        ),
-                        placeholder = { Text(text = stringResource(id = R.string.add_result_name_hint)) },
-                        trailingIcon = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_baseline_keyboard_arrow_down_24),
-                                contentDescription = null
-                            )
-                        },
-                        isError = state.isSportEmpty,
-                        modifier = Modifier
-                            .onFocusChanged {
-                                if (it.isFocused) {
-                                    onSelectSportClick()
-                                }
-                            }
-                            .fillMaxWidth()
-                    )
-                }
-                if (state.isSportEmpty) {
-                    Text(
-                        text = stringResource(id = R.string.add_result_name_error),
-                        color = MaterialTheme.colors.error,
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier.padding(start = 16.dp, top = 0.dp)
-                    )
-                }
-            }
-        }
-
+        item { SportNameField(onSelectSportClick, state) }
         item { Spacer(modifier = Modifier.height(8.dp)) }
-
-        item {
-            Column {
-                OutlinedTextField(
-                    value = state.place,
-                    onValueChange = { onPlaceChange(it) },
-                    label = { Text(text = stringResource(id = R.string.add_result_place_label)) },
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                    trailingIcon = {
-                        if (state.place.isEmpty()) return@OutlinedTextField
-
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_baseline_clear_24),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .clickable {
-                                    onPlaceChange(String.empty)
-                                }
-                        )
-                    },
-                    isError = state.isPlaceEmpty,
-                    singleLine = true,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
-                if (state.isPlaceEmpty) {
-                    Text(
-                        text = stringResource(id = R.string.add_result_place_error),
-                        color = MaterialTheme.colors.error,
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier.padding(start = 16.dp, top = 0.dp)
-                    )
-                }
-            }
-        }
-
+        item { PlaceField(state, onPlaceChange) }
         item { Spacer(modifier = Modifier.height(8.dp)) }
-
-        item {
-            Column {
-                OutlinedTextField(
-                    value = TextFieldValue(
-                        text = state.duration,
-                        selection = TextRange(state.durationCursorPosition)
-                    ),
-                    onValueChange = {
-                        onDurationChange(it.text, it.selection.start)
-                    },
-                    label = { Text(text = stringResource(id = R.string.add_result_duration_label)) },
-                    visualTransformation = DateTransformation(),
-                    placeholder = { Text(text = stringResource(id = R.string.add_result_duration_hint)) },
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                    trailingIcon = {
-                        if (state.duration.isEmpty()) return@OutlinedTextField
-
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_baseline_clear_24),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .clickable {
-                                    onCleanDuration()
-                                }
-                        )
-                    },
-                    isError = state.isDurationEmpty,
-                    singleLine = true,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
-                if (state.isDurationEmpty) {
-                    Text(
-                        text = stringResource(id = R.string.add_result_duration_error),
-                        color = MaterialTheme.colors.error,
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier.padding(start = 16.dp, top = 0.dp)
-                    )
-                }
-            }
-        }
-
+        item { DurationField(state, onDurationChange, onCleanDuration) }
         item { Spacer(modifier = Modifier.height(12.dp)) }
+        item { FlagRemote(onFlagIsRemoteChange, state, onFlagIsRemoteSetup) }
+    }
+}
 
-        item {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+@Composable
+private fun FlagRemote(
+    onFlagIsRemoteChange: () -> Unit,
+    state: AddResultViewModel.State,
+    onFlagIsRemoteSetup: (Boolean) -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .clickable { onFlagIsRemoteChange() }
+    ) {
+        Text(
+            text = stringResource(id = R.string.add_result_storage_title),
+            modifier = Modifier
+                .height(24.dp)
+                .weight(1f)
+                .padding(start = 32.dp)
+        )
+
+        Checkbox(
+            checked = state.isRemote,
+            onCheckedChange = { onFlagIsRemoteSetup(!state.isRemote) },
+            modifier = Modifier
+                .padding(end = 16.dp)
+        )
+    }
+}
+
+@Composable
+private fun DurationField(
+    state: AddResultViewModel.State,
+    onDurationChange: (String, Int) -> Unit,
+    onCleanDuration: () -> Unit
+) {
+    Column {
+        OutlinedTextField(
+            value = TextFieldValue(
+                text = state.duration,
+                selection = TextRange(state.durationCursorPosition)
+            ),
+            onValueChange = {
+                onDurationChange(it.text, it.selection.start)
+            },
+            label = { Text(text = stringResource(id = R.string.add_result_duration_label)) },
+            visualTransformation = DateTransformation(),
+            placeholder = { Text(text = stringResource(id = R.string.add_result_duration_hint)) },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+            trailingIcon = {
+                if (state.duration.isEmpty()) return@OutlinedTextField
+
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_clear_24),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clickable {
+                            onCleanDuration()
+                        }
+                )
+            },
+            isError = state.isDurationEmpty,
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        )
+        if (state.isDurationEmpty) {
+            Text(
+                text = stringResource(id = R.string.add_result_duration_error),
+                color = MaterialTheme.colors.error,
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier.padding(start = 16.dp, top = 0.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun PlaceField(
+    state: AddResultViewModel.State,
+    onPlaceChange: (String) -> Unit
+) {
+    Column {
+        OutlinedTextField(
+            value = state.place,
+            onValueChange = { onPlaceChange(it) },
+            label = { Text(text = stringResource(id = R.string.add_result_place_label)) },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+            trailingIcon = {
+                if (state.place.isEmpty()) return@OutlinedTextField
+
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_clear_24),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clickable {
+                            onPlaceChange(String.empty)
+                        }
+                )
+            },
+            isError = state.isPlaceEmpty,
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        )
+        if (state.isPlaceEmpty) {
+            Text(
+                text = stringResource(id = R.string.add_result_place_error),
+                color = MaterialTheme.colors.error,
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier.padding(start = 16.dp, top = 0.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun SportNameField(
+    onSelectSportClick: () -> Unit,
+    state: AddResultViewModel.State
+) {
+    Column {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .clickable { onSelectSportClick() }
+        ) {
+            OutlinedTextField(
+                value = state.sportName,
+                onValueChange = { },
+                readOnly = true,
+                enabled = state.isSportEmpty,
+                colors = TextFieldDefaults.textFieldColors(
+                    disabledTextColor = LocalContentColor.current.copy(LocalContentAlpha.current),
+                    backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = 0f),
+                    disabledIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.UnfocusedIndicatorLineOpacity),
+                    disabledTrailingIconColor = MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.IconOpacity),
+                    disabledLabelColor = MaterialTheme.colors.onSurface.copy(ContentAlpha.medium),
+                    disabledPlaceholderColor = MaterialTheme.colors.onSurface.copy(
+                        ContentAlpha.medium
+                    )
+                ),
+                placeholder = { Text(text = stringResource(id = R.string.add_result_name_hint)) },
+                trailingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_baseline_keyboard_arrow_down_24),
+                        contentDescription = null
+                    )
+                },
+                isError = state.isSportEmpty,
                 modifier = Modifier
-                    .clickable { onFlagIsRemoteChange() }
-            ) {
-                Text(
-                    text = stringResource(id = R.string.add_result_storage_title),
-                    modifier = Modifier
-                        .height(24.dp)
-                        .weight(1f)
-                        .padding(start = 32.dp)
-                )
-
-                Checkbox(
-                    checked = state.isRemote,
-                    onCheckedChange = { onFlagIsRemoteSetup(!state.isRemote) },
-                    modifier = Modifier
-                        .padding(end = 16.dp)
-                )
-            }
+                    .onFocusChanged {
+                        if (it.isFocused) {
+                            onSelectSportClick()
+                        }
+                    }
+                    .fillMaxWidth()
+            )
+        }
+        if (state.isSportEmpty) {
+            Text(
+                text = stringResource(id = R.string.add_result_name_error),
+                color = MaterialTheme.colors.error,
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier.padding(start = 16.dp, top = 0.dp)
+            )
         }
     }
 }

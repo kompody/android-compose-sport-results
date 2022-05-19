@@ -47,4 +47,6 @@
     <string name="add_result_fail_add_result_to_locale_message">Complete add to Locale</string>
 
     <string name="select_sport_title">Name of sport result</string>
+
+    <string name="detail_title">Detail</string>
 </resources>

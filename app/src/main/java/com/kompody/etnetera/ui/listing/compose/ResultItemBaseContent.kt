@@ -19,7 +19,7 @@ import com.kompody.etnetera.utils.extensions.empty
 
 @Composable
 fun ResultItemBaseContent(
-    name: String = String.empty,
+    sportName: String = String.empty,
     place: String = String.empty,
     duration: String = String.empty,
     date: String = String.empty,
@@ -60,7 +60,7 @@ fun ResultItemBaseContent(
 
             Column {
                 Text(
-                    text = name,
+                    text = sportName,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.height(24.dp)
                 )
