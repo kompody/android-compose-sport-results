@@ -1,9 +1,11 @@
 package com.kompody.etnetera.domain.entity
 
 data class ResultModel(
-    val name: String,
+    val id: Long = 0,
+    val sportId: Int,
+    val sportName: String,
     val place: Int,
-    val duration: Float,
+    val duration: Int,
     val date: Long,
     val type: Type
 ) {

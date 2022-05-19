@@ -4,7 +4,9 @@ import com.kompody.etnetera.data.database.model.ResultDbModel
 import com.kompody.etnetera.domain.entity.ResultModel
 
 fun ResultDbModel.toModel() = ResultModel(
-    name = name,
+    id = id,
+    sportId = sportId,
+    sportName = sportName,
     place = place,
     duration = duration,
     date = date,
@@ -12,7 +14,8 @@ fun ResultDbModel.toModel() = ResultModel(
 )
 
 fun ResultModel.toDbModel() = ResultDbModel(
-    name = name,
+    sportId = sportId,
+    sportName = sportName,
     place = place,
     duration = duration,
     date = date,

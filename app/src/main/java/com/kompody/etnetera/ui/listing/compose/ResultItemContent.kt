@@ -1,4 +1,4 @@
-package com.kompody.etnetera.ui.listing.view.listing
+package com.kompody.etnetera.ui.listing.compose
 
 import androidx.compose.runtime.Composable
 import com.kompody.etnetera.ui.listing.model.ResultItem

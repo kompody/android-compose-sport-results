@@ -10,9 +10,10 @@ import com.kompody.etnetera.data.database.Tables
 class ResultDbModel(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    val name: String,
+    val sportId: Int,
+    val sportName: String,
     val place: Int,
-    val duration: Float,
-    val date: Long,
-    val type: String
+    val duration: Int,
+    val type: String,
+    val date: Long
 )

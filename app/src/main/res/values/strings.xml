@@ -21,11 +21,30 @@
     <string name="listing_filter_only_remote">Only Remote</string>
     <string name="listing_filter_only_locale">Only Locale</string>
 
+    <string name="listing_items_empty">Empty content</string>
+    <string name="listing_loading_error">Error loading content\nplease refresh the page</string>
+
     <string name="listing_item_name">Name</string>
     <string name="listing_item_place">Place</string>
     <string name="listing_item_duration">Duration</string>
     <string name="listing_item_remote_indicator">remote</string>
     <string name="listing_item_locale_indicator">locale</string>
-    <string name="listing_loading_error">Error loading content\nplease refresh the page</string>
-    <string name="listing_items_empty">Empty content</string>
+
+    <string name="add_result_title">Add Result</string>
+    <string name="add_result_name_hint">Name of sport result</string>
+    <string name="add_result_name_error">Name must be filled</string>
+    <string name="add_result_place_label">Place</string>
+    <string name="add_result_place_error">Name must be filled</string>
+    <string name="add_result_duration_label">Duration</string>
+    <string name="add_result_duration_hint">hh:ss:mmm</string>
+    <string name="add_result_duration_error">Name must be filled</string>
+    <string name="add_result_select_duration_dialog_title">Remote storage</string>
+    <string name="add_result_storage_title">Remote storage</string>
+    <string name="add_result_add_button_title">Save</string>
+    <string name="add_result_complete_add_result_to_remote_message">Complete add to Remote</string>
+    <string name="add_result_fail_add_result_to_remote_message">Complete add to Remote</string>
+    <string name="add_result_complete_add_result_to_locale_message">Complete add to Locale</string>
+    <string name="add_result_fail_add_result_to_locale_message">Complete add to Locale</string>
+
+    <string name="select_sport_title">Name of sport result</string>
 </resources>

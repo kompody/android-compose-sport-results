@@ -1,4 +1,4 @@
-package com.kompody.etnetera.ui.listing.view.listing
+package com.kompody.etnetera.ui.listing.compose
 
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon

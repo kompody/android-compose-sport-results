@@ -14,25 +14,34 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kompody.etnetera.R
-import com.kompody.etnetera.ui.listing.view.listing.FilterMenu
-import com.kompody.etnetera.ui.listing.view.listing.ResultListingItems
+import com.kompody.etnetera.ui.listing.compose.FilterMenu
+import com.kompody.etnetera.ui.listing.compose.ResultListingItems
+import com.kompody.etnetera.ui.listing.model.ResultItem
 import com.kompody.etnetera.ui.theme.MainTheme
 import com.kompody.etnetera.ui.view.EmptyContent
 import com.kompody.etnetera.ui.view.LoadErrorContent
 import com.kompody.etnetera.ui.view.LoadingContent
+import com.kompody.etnetera.ui.view.PlaceholderContent
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 
 @Composable
-fun ListingScreen() {
+fun ListingScreen(
+    openAddResultScreen: () -> Unit = {},
+    openDetailScreen: (ResultItem) -> Unit = {}
+) {
     val viewModel: ListingViewModel = hiltViewModel()
+    val scaffoldState: ScaffoldState = rememberScaffoldState()
 
     LaunchedEffect(true) {
         viewModel.commands.flow.collect { command ->
             when (command) {
-                is ListingViewModel.Command.ShowFilterDialog -> {}
-                is ListingViewModel.Command.OpenAddResultScreen -> {}
-                is ListingViewModel.Command.OpenListingItem -> {}
+                is ListingViewModel.Command.OpenAddResultScreen -> {
+                    openAddResultScreen()
+                }
+                is ListingViewModel.Command.OpenListingItem -> {
+                    openDetailScreen(command.item)
+                }
             }
         }
     }
@@ -43,8 +52,10 @@ fun ListingScreen() {
             onFilterAllClick = { viewModel.accept(ListingViewModel.Action.FilterAllClick) },
             onFilterOnlyRemoteClick = { viewModel.accept(ListingViewModel.Action.FilterOnlyRemote) },
             onFilterOnlyLocaleClick = { viewModel.accept(ListingViewModel.Action.FilterOnlyLocale) },
+            onResultItemClick = { viewModel.accept(ListingViewModel.Action.ListingItemClick(it)) },
             onAddClick = { viewModel.accept(ListingViewModel.Action.AddButtonClick) },
-            viewModel = viewModel
+            viewModel = viewModel,
+            scaffoldState = scaffoldState
         )
     }
 }
@@ -52,14 +63,14 @@ fun ListingScreen() {
 @Composable
 private fun ListingScreen(
     onRefresh: () -> Unit = {},
-    onFilterAllClick: () -> Unit,
-    onFilterOnlyRemoteClick: () -> Unit,
-    onFilterOnlyLocaleClick: () -> Unit,
+    onFilterAllClick: () -> Unit = {},
+    onFilterOnlyRemoteClick: () -> Unit = {},
+    onFilterOnlyLocaleClick: () -> Unit = {},
+    onResultItemClick: (ResultItem) -> Unit = {},
     onAddClick: () -> Unit = {},
-    viewModel: ListingViewModel
+    viewModel: ListingViewModel,
+    scaffoldState: ScaffoldState
 ) {
-    val scaffoldState: ScaffoldState = rememberScaffoldState()
-
     val actionLabel = stringResource(id = R.string.refresh)
     LaunchedEffect(scaffoldState.snackbarHostState) {
         viewModel.errors.flow.collect { error ->
@@ -71,32 +82,34 @@ private fun ListingScreen(
                 SnackbarResult.Dismissed -> {
                 }
                 SnackbarResult.ActionPerformed -> {
-                    onRefresh.invoke()
+                    onRefresh()
                 }
             }
         }
     }
 
     ListingContent(
-        viewModel = viewModel,
         onRefresh = onRefresh,
         onFilterAllClick = onFilterAllClick,
         onFilterOnlyRemoteClick = onFilterOnlyRemoteClick,
         onFilterOnlyLocaleClick = onFilterOnlyLocaleClick,
+        onResultItemClick = onResultItemClick,
         onAddClick = onAddClick,
+        viewModel = viewModel,
         scaffoldState = scaffoldState
     )
 }
 
 @Composable
 private fun ListingContent(
-    viewModel: ListingViewModel,
     onRefresh: () -> Unit = {},
-    onFilterAllClick: () -> Unit,
-    onFilterOnlyRemoteClick: () -> Unit,
-    onFilterOnlyLocaleClick: () -> Unit,
+    onFilterAllClick: () -> Unit = {},
+    onFilterOnlyRemoteClick: () -> Unit = {},
+    onFilterOnlyLocaleClick: () -> Unit = {},
+    onResultItemClick: (ResultItem) -> Unit = {},
     onAddClick: () -> Unit = {},
-    scaffoldState: ScaffoldState,
+    viewModel: ListingViewModel,
+    scaffoldState: ScaffoldState
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
@@ -130,9 +143,10 @@ private fun ListingContent(
             .padding(innerPadding)
 
         ListingContent(
-            state = state,
-            loading = loading,
             onRefresh = onRefresh,
+            onResultItemClick = onResultItemClick,
+            loading = loading,
+            state = state,
             modifier = insetsModifier
         )
     }
@@ -140,9 +154,10 @@ private fun ListingContent(
 
 @Composable
 private fun ListingContent(
-    state: ListingViewModel.State,
-    loading: Boolean,
     onRefresh: () -> Unit = {},
+    onResultItemClick: (ResultItem) -> Unit = {},
+    loading: Boolean,
+    state: ListingViewModel.State,
     modifier: Modifier
 ) {
     LoadingContent(
@@ -151,10 +166,13 @@ private fun ListingContent(
         modifier = modifier
     ) {
         when (state) {
-            is ListingViewModel.State.Success -> ResultListingItems(state.items)
+            is ListingViewModel.State.Success -> ResultListingItems(
+                onResultItemClick = onResultItemClick,
+                items = state.items
+            )
             is ListingViewModel.State.Error -> LoadErrorContent(modifier)
             is ListingViewModel.State.Empty -> EmptyContent(modifier)
-            else -> EmptyContent(modifier)
+            else -> PlaceholderContent(modifier)
         }
     }
 }

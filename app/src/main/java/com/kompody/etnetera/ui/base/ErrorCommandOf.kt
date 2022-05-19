@@ -7,16 +7,16 @@ import timber.log.Timber
 
 class ErrorCommandOf : CommandOf<String>() {
 
-    fun execute(resourceDelegate: ResourceDelegate, exception: Exception) {
-        val message = makeErrorMessage(resourceDelegate, exception)
+    fun execute(resourceDelegate: ResourceDelegate, throwable: Throwable) {
+        val message = makeErrorMessage(resourceDelegate, throwable)
         super.execute(message)
-        Timber.e(exception)
+        Timber.e(throwable)
     }
 
-    private fun makeErrorMessage(resourceDelegate: ResourceDelegate, exception: Exception): String {
-        return when (exception) {
+    private fun makeErrorMessage(resourceDelegate: ResourceDelegate, throwable: Throwable): String {
+        return when (throwable) {
             is AppException.Api.NotSuccess -> resourceDelegate.getString(R.string.error_load)
-            is AppException.Api.Error -> exception.msg
+            is AppException.Api.Error -> throwable.msg
             else -> resourceDelegate.getString(R.string.error_load)
         }
     }

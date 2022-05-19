@@ -6,6 +6,7 @@ import com.kompody.etnetera.data.network.HeaderInterceptor
 import com.kompody.etnetera.data.network.HttpErrorMappingInterceptor
 import com.kompody.etnetera.data.network.MockInterceptor
 import com.kompody.etnetera.data.network.api.ResultApi
+import com.kompody.etnetera.data.network.api.SportsListApi
 import com.kompody.etnetera.utils.buildOkHttpClient
 import dagger.Module
 import dagger.Provides
@@ -22,6 +23,9 @@ object NetworkModule {
 
     @Provides
     fun provideResultApi(retrofit: Retrofit): ResultApi = retrofit.create()
+
+    @Provides
+    fun provideSportsListApi(retrofit: Retrofit): SportsListApi = retrofit.create()
 
     @Provides
     fun provideRetrofit(

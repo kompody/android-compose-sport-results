@@ -16,3 +16,5 @@ val Color.Companion.ListingItemRemoteBackground: Color get() = Color(0xffffe8e8)
 val Color.Companion.ListingItemRemoteIndicatorTextColor: Color get() = Color(0xffce0e0e)
 val Color.Companion.ListingItemLocaleBackground: Color get() = Color(0xffe8eeff)
 val Color.Companion.ListingItemLocaleIndicatorTextColor: Color get() = Color(0xff400ece)
+
+val Color.Companion.Divider: Color get() = Color(0x33212121)

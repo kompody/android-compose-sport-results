@@ -13,7 +13,7 @@ class StateOf<T>(initValue: T) {
     val value get() = _state.value
 
     fun update(map: (T) -> T) {
-        _state.update { map.invoke(_state.value) }
+        _state.update { map(_state.value) }
     }
 }
 

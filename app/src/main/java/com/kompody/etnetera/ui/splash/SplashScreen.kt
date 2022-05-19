@@ -28,7 +28,7 @@ fun SplashScreen(
     LaunchedEffect(true) {
         viewModel.commands.flow.collect { command ->
             when (command) {
-                is SplashViewModel.Command.OpenMainScreen -> openMainScreen.invoke()
+                is SplashViewModel.Command.OpenMainScreen -> openMainScreen()
             }
         }
     }

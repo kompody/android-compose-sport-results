@@ -3,6 +3,7 @@ package com.kompody.etnetera.data.network
 import com.kompody.etnetera.BuildConfig
 import com.kompody.etnetera.data.network.mock.fetchSportListMock
 import com.kompody.etnetera.data.network.mock.getErrorMock
+import com.kompody.etnetera.data.network.mock.getListSportsMock
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Protocol
@@ -25,6 +26,7 @@ class MockInterceptor @Inject constructor(
         val uri = chain.request().url.pathSegments.joinToString("/")
         val responseString = when {
             uri.endsWith("list/results") -> fetchSportListMock
+            uri.endsWith("list/sports") -> getListSportsMock
             else -> ""
         }
 

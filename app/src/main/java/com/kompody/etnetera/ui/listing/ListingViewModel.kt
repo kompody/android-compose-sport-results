@@ -43,7 +43,7 @@ class ListingViewModel @Inject constructor(
     }
 
     sealed class State {
-        object Payload : State()
+        object Placeholder : State()
         object Error : State()
         object Empty : State()
         class Success(
@@ -54,7 +54,6 @@ class ListingViewModel @Inject constructor(
 
     sealed class Action {
         object Refresh : Action()
-        object MenuClick : Action()
         object AddButtonClick : Action()
         class ListingItemClick(val item: ResultItem) : Action()
         object FilterAllClick : Action()
@@ -63,7 +62,6 @@ class ListingViewModel @Inject constructor(
     }
 
     sealed class Command {
-        object ShowFilterDialog : Command()
         object OpenAddResultScreen : Command()
         class OpenListingItem(val item: ResultItem) : Command()
     }
@@ -71,17 +69,26 @@ class ListingViewModel @Inject constructor(
     private val selectedFilter = stateOf(ResultItemFilter.All)
 
     val commands = commandOf<Command>()
-    val state = stateOf<State>(State.Payload)
+    val state = stateOf<State>(State.Placeholder)
     val loading = stateOf(false)
 
     init {
-        state.update { State.Payload }
+        handleUpdateLocaleDatabase()
+        state.update { State.Placeholder }
         refresh()
+    }
+
+    private fun handleUpdateLocaleDatabase() {
+        viewModelScope.launch {
+            fetchResultsUseCase.flowLocaleResults()
+                .collectLatest {
+                    refresh()
+                }
+        }
     }
 
     fun accept(action: Action) = when (action) {
         is Action.Refresh -> refresh()
-        is Action.MenuClick -> commands.execute(Command.ShowFilterDialog)
         is Action.AddButtonClick -> commands.execute(Command.OpenAddResultScreen)
         is Action.ListingItemClick -> commands.execute(Command.OpenListingItem(action.item))
         is Action.FilterAllClick -> loadAllResults()
@@ -121,13 +128,16 @@ class ListingViewModel @Inject constructor(
     private fun fetchResults() {
         loading.update { true }
         viewModelScope.launch {
-            try {
-                val items = io { fetchResultsUseCase.execute(selectedFilter.value) }
-                main { showRecords(items) }
-            } catch (e: Exception) {
-                errors.execute(resourceDelegate, e)
-                showError()
-            }
+            kotlin.runCatching { io { fetchResultsUseCase.execute(selectedFilter.value) } }
+                .onSuccess { items ->
+                    main { showRecords(items) }
+                }
+                .onFailure { throwable ->
+                    main {
+                        errors.execute(resourceDelegate, throwable)
+                        showError()
+                    }
+                }
         }
     }
 

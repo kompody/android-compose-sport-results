@@ -1,6 +1,8 @@
 package com.kompody.etnetera.ui.listing.model
 
-sealed class ResultItem {
+import java.io.Serializable
+
+sealed class ResultItem : Serializable {
     class RemoteResultItem(
         val name: String,
         val place: String,

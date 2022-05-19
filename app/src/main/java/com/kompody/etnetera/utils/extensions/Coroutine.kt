@@ -7,15 +7,15 @@ import kotlinx.coroutines.flow.flow
 
 suspend fun <T> io(
     block: suspend CoroutineScope.() -> T
-) : T = withContext(Dispatchers.IO) { block.invoke(this) }
+) : T = withContext(Dispatchers.IO) { block(this) }
 
 suspend fun <T> computation(
     block: suspend CoroutineScope.() -> T
-) : T = withContext(Dispatchers.Default) { block.invoke(this) }
+) : T = withContext(Dispatchers.Default) { block(this) }
 
 suspend fun <T> main(
     block: suspend CoroutineScope.() -> T
-) : T = withContext(Dispatchers.Default) { block.invoke(this) }
+) : T = withContext(Dispatchers.Default) { block(this) }
 
 fun <T1, T2> combineFlow(
     flow1: Flow<T1>,

@@ -1,4 +1,4 @@
-package com.kompody.etnetera.ui.listing.view.listing
+package com.kompody.etnetera.ui.listing.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.kompody.etnetera.R
@@ -100,8 +101,8 @@ fun ResultItemBaseContent(
 
         Text(
             text = date,
+            textAlign = TextAlign.Center,
             modifier = Modifier
-                .height(24.dp)
                 .constrainAs(datevalue) {
                     end.linkTo(parent.end)
                     bottom.linkTo(parent.bottom)

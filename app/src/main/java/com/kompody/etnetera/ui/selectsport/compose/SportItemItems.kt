@@ -1,10 +1,6 @@
-@file:OptIn(ExperimentalFoundationApi::class)
+package com.kompody.etnetera.ui.selectsport.compose
 
-package com.kompody.etnetera.ui.listing.view.listing
-
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,33 +9,34 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.kompody.etnetera.ui.listing.model.ResultItem
+import com.kompody.etnetera.ui.selectsport.model.SportItem
 
 @Composable
-fun ResultListingItems(items: List<ResultItem>) {
+fun SportItemItems(
+    onSportItemClick: (SportItem) -> Unit = {},
+    items: List<SportItem>
+) {
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
             .padding(vertical = 16.dp)
             .fillMaxSize()
     ) {
-        items(items = items, key = { it.hashCode() }) { item ->
-            ResultItemContent(
+        items(items = items) { item ->
+            SportItemContent(
                 item = item,
                 modifier = Modifier
-                    .clickable { items.shuffled() }
-                    .animateItemPlacement()
+                    .clickable { onSportItemClick(item) }
             )
         }
     }
 }
 
 @Composable
-private fun ResultItemContent(
-    item: ResultItem,
+private fun SportItemContent(
+    item: SportItem,
     modifier: Modifier
 ) {
     Column(modifier = modifier) {
-        ResultItemContent(item)
+        SportItemContent(item = item)
     }
 }
